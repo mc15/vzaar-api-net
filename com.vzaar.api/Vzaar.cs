@@ -125,6 +125,24 @@ namespace com.vzaar.api
             var response = executeRequest( url );
             var jo = (JObject)JsonConvert.DeserializeObject( response );
 
+            var errorProperty = jo.Property("error");
+            var vzaarApiProperty = jo.Property("vzaar-api");
+
+            if (errorProperty != null && (string)errorProperty.Value == "In progress" ||
+                vzaarApiProperty != null && (string)vzaarApiProperty.Value["type"] == "video" &&
+                (string)vzaarApiProperty.Value["state"] == "Processing")
+            {
+                return new VideoDetails
+                {
+                    videoStatus = new VideoDetailsVideoStatus
+                    {
+                        id = 1,
+                        description = "Processing"
+                    },
+                    thumbnail = new VideoDetailsThumbnail()
+                };
+            }
+
             var result = new VideoDetails
             {
                 duration = (decimal)jo["duration"],
