@@ -128,9 +128,13 @@ namespace com.vzaar.api
             var errorProperty = jo.Property("error");
             var vzaarApiProperty = jo.Property("vzaar-api");
 
-            if (errorProperty != null && (string)errorProperty.Value == "In progress" ||
+            if (errorProperty != null && (string)errorProperty.Value == "In progress"
+                ||
                 vzaarApiProperty != null && (string)vzaarApiProperty.Value["type"] == "video" &&
-                (string)vzaarApiProperty.Value["state"] == "Processing")
+                (string)vzaarApiProperty.Value["state"] == "Processing"
+                ||
+                jo["height"] == null || jo["width"] == null
+                )
             {
                 return new VideoDetails
                 {
