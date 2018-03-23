@@ -125,16 +125,12 @@ namespace com.vzaar.api
             var response = executeRequest( url );
             var jo = (JObject)JsonConvert.DeserializeObject( response );
 
+            // Custom code added by BL ////////////////////////////////////////////////////////////////////////////////
+
             var errorProperty = jo.Property("error");
             var vzaarApiProperty = jo.Property("vzaar-api");
 
-            if (errorProperty != null && (string)errorProperty.Value == "In progress"
-                ||
-                vzaarApiProperty != null && (string)vzaarApiProperty.Value["type"] == "video" &&
-                (string)vzaarApiProperty.Value["state"] == "Processing"
-                ||
-                jo["height"] == null || jo["width"] == null
-                )
+            if (errorProperty != null && (string)errorProperty.Value == "In progress")
             {
                 return new VideoDetails
                 {
@@ -146,6 +142,21 @@ namespace com.vzaar.api
                     thumbnail = new VideoDetailsThumbnail()
                 };
             }
+
+            if (vzaarApiProperty != null && vzaarApiProperty.Value["video"] != null)
+            {
+                return new VideoDetails
+                {
+                    videoStatus = new VideoDetailsVideoStatus
+                    {
+                        id = (int)vzaarApiProperty.Value["video"]["video_status_id"],
+                        description = (string)vzaarApiProperty.Value["video"]["state"]
+                    },
+                    thumbnail = new VideoDetailsThumbnail()
+                };
+            }
+
+            // End of custom code /////////////////////////////////////////////////////////////////////////////////////
 
             var result = new VideoDetails
             {
