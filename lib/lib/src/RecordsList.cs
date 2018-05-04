@@ -11,7 +11,7 @@ namespace VzaarApi
 		public string RecordEndpoint { get; set;}
 
 		public JObject Data { get; set; }
-		public List<Record> List { get; }
+		public List<Record> List { get; set; }
 
 		public RecordsList (string endpoint)
 		{
